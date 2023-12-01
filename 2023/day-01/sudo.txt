@@ -1,0 +1,9 @@
+DECLARE total as 0
+LOOP lines
+  TRANSFORM all text numbers into to integer value
+  ARRAY of all numbers
+  STORE first array index value 
+  STORE last array length - 1 index value
+  CONCATENATE first and last
+  INCREMENT total by concatenation
+RETURN total
