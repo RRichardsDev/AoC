@@ -24,11 +24,11 @@ func wordToDigit(line string) string {
 	})
 }
 
-func main() {
+func Part2() int {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
-		return
+		return -1
 	}
 	defer file.Close()
 
@@ -38,10 +38,8 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		println("line:", line)
 		// Replace spelled out numbers with digits
 		line = wordToDigit(line)
-		println("mod line:", line)
 		line = wordToDigit(line)
 		line = wordToDigit(line)
 		line = wordToDigit(line)
@@ -51,29 +49,12 @@ func main() {
 		line = wordToDigit(line)
 		line = wordToDigit(line)
 		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		line = wordToDigit(line)
-		println("fin line:", line)
 
 		// Find the first and last digit in the line
 		digits := regexp.MustCompile(`\d`).FindAllString(line, -1)
 		if len(digits) > 0 {
-			println("Digits 0:", digits[0])
-			println("Digits 1:", digits[len(digits)-1])
-
 			calibrationValue, _ := strconv.Atoi(digits[0] + digits[len(digits)-1])
-			// println("Calibration value:", calibrationValue)
 			totalSum += calibrationValue
-			// println("Total sum:", totalSum)
 		}
 	}
 
@@ -81,5 +62,5 @@ func main() {
 		fmt.Println("Error reading from file:", err)
 	}
 
-	fmt.Println("Total sum of calibration values:", totalSum)
+	return totalSum
 }

@@ -2,13 +2,12 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
 )
 
-func main() {
+func Part1() int {
 	// Open the file
 	file, err := os.Open("input.txt")
 	if err != nil {
@@ -45,7 +44,6 @@ func main() {
 		}
 
 		if startNo != -1 && endNo != -1 {
-			fmt.Printf("start: %d end: %d\n", startNo, endNo)
 			// Convert numbers to string and concatenate
 			lineVal := strconv.Itoa(startNo) + strconv.Itoa(endNo)
 
@@ -67,5 +65,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Total: ", total)
+	return total
 }
