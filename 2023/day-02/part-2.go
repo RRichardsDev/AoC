@@ -68,13 +68,8 @@ func Part2() int {
 				highestBlue = handful["blue"]
 			}
 		}
-		println("highestRed", highestRed)
-		println("highestGreen", highestGreen)
-		println("highestBlue", highestBlue)
+
 		gamePower = highestRed * highestGreen * highestBlue
-		println("---")
-		println("gamePower", gamePower)
-		println("---")
 
 		setPowers = append(setPowers, gamePower)
 
