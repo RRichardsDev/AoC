@@ -2,18 +2,17 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"strconv"
 )
 
-type LineNumber struct {
+type LineNum struct {
 	value int
 }
 
-type SymbolIndex struct {
+type SymbolIdx struct {
 	index int
 }
 
@@ -23,11 +22,11 @@ type PartNumber struct {
 	nextIndex     int
 }
 
-var linesSymbolsIndexes = make(map[LineNumber][]SymbolIndex)
-var partNumbers = make(map[LineNumber][]PartNumber)
+var linesSymbolsIdxs = make(map[LineNum][]SymbolIdx)
+var partNumbers = make(map[LineNum][]PartNumber)
 var sum int
 
-func Part1() {
+func Part1() int {
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -35,42 +34,40 @@ func Part1() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-	lineNumber := 0
+	lineNum := 0
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		lineNumber++
+		lineNum++
 
-		reSymbol := regexp.MustCompile(`[^\w\s.]`)
-		reNumbers := regexp.MustCompile(`\d+`)
+		isSymbol := regexp.MustCompile(`[^\w\s.]`)
+		isNumber := regexp.MustCompile(`\d+`)
 
-		lineNumberTyped := LineNumber{lineNumber}
-		// indexes of symbols
-		symbolIndexesPairs := reSymbol.FindAllStringIndex(line, -1)
-		var symbolIndexes []SymbolIndex
-		for _, symbolIndexesPair := range symbolIndexesPairs {
-			symbolIndexes = append(symbolIndexes, SymbolIndex{symbolIndexesPair[0]}) // only one letter expected
+		lineNumTyped := LineNum{lineNum}
+		symbolIdxPairs := isSymbol.FindAllStringIndex(line, -1)
+		var symbolIdxs []SymbolIdx
+		for _, symbolIdxsPair := range symbolIdxPairs {
+			symbolIdxs = append(symbolIdxs, SymbolIdx{symbolIdxsPair[0]})
 		}
-		linesSymbolsIndexes[lineNumberTyped] = append(linesSymbolsIndexes[lineNumberTyped], symbolIndexes...)
+		linesSymbolsIdxs[lineNumTyped] = append(linesSymbolsIdxs[lineNumTyped], symbolIdxs...)
 
-		// numbers
-		numberPairs := reNumbers.FindAllString(line, -1)
-		var numberPairsInt []int
-		for _, numberPair := range numberPairs {
-			asInt, _ := strconv.Atoi(numberPair)
-			numberPairsInt = append(numberPairsInt, asInt)
+		numPairs := isNumber.FindAllString(line, -1)
+		var numPairsInt []int
+		for _, numPair := range numPairs {
+			asInt, _ := strconv.Atoi(numPair)
+			numPairsInt = append(numPairsInt, asInt)
 		}
 
 		// indexes of numbers
-		numberIndexesPairs := reNumbers.FindAllStringIndex(line, -1)
+		numIdxPairs := isNumber.FindAllStringIndex(line, -1)
 
 		// zip to PartNumber - numbers with extended to previous and next indexes
-		for index, numberIndexesPair := range numberIndexesPairs {
+		for index, numIndePair := range numIdxPairs {
 			previousNeighbour := 0
-			if numberIndexesPair[0] > 0 {
-				previousNeighbour = numberIndexesPair[0] - 1
+			if numIndePair[0] > 0 {
+				previousNeighbour = numIndePair[0] - 1
 			}
-			partNumbers[lineNumberTyped] = append(partNumbers[lineNumberTyped], PartNumber{numberPairsInt[index], previousNeighbour, numberIndexesPair[1]})
+			partNumbers[lineNumTyped] = append(partNumbers[lineNumTyped], PartNumber{numPairsInt[index], previousNeighbour, numIndePair[1]})
 		}
 	}
 
@@ -78,9 +75,9 @@ func Part1() {
 		for _, partNumber := range partNumbers {
 			shouldBeCounted := false
 
-			previousLineSymbolIndexes := linesSymbolsIndexes[LineNumber{lineNumber.value - 1}]
-			thisLineSymbolIndexes := linesSymbolsIndexes[LineNumber{lineNumber.value}]
-			nextLineSymbolIndexes := linesSymbolsIndexes[LineNumber{lineNumber.value + 1}]
+			previousLineSymbolIndexes := linesSymbolsIdxs[LineNum{lineNumber.value - 1}]
+			thisLineSymbolIndexes := linesSymbolsIdxs[LineNum{lineNumber.value}]
+			nextLineSymbolIndexes := linesSymbolsIdxs[LineNum{lineNumber.value + 1}]
 
 			partNumberMinIndex := partNumber.previousIndex
 			partNumberMaxIndex := partNumber.nextIndex
@@ -113,5 +110,5 @@ func Part1() {
 		}
 	}
 
-	fmt.Println(sum)
+	return sum
 }
